@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Automation Test Chatbot Q&A</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --pass-bg: #dcfce7;
+            --pass-text: #15803d;
+            --fail-bg: #fee2e2;
+            --fail-text: #b91c1c;
+            --na-bg: #f1f5f9;
+            --na-text: #475569;
+            --untested-bg: #fef3c7;
+            --untested-text: #b45309;
+            --primary-color: #2563eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0 0 8px 0;
+            color: #0f172a;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Summary Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .stat-title {
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-value.pass { color: var(--pass-text); }
+        .stat-value.fail { color: var(--fail-text); }
+        .stat-value.na { color: var(--na-text); }
+        .stat-value.untested { color: var(--untested-text); }
+
+        /* Table Styling */
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow-x: auto;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 600;
+            padding: 12px 14px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Priority & Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .badge.pass { background: var(--pass-bg); color: var(--pass-text); }
+        .badge.fail { background: var(--fail-bg); color: var(--fail-text); }
+        .badge.na { background: var(--na-bg); color: var(--na-text); }
+        .badge.untested { background: var(--untested-bg); color: var(--untested-text); }
+
+        .badge.priority-cao { background: #fee2e2; color: #991b1b; }
+        .badge.priority-tb { background: #e0f2fe; color: #075985; }
+        .badge.priority-thap { background: #f3f4f6; color: #374151; }
+
+        .tc-id {
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .session-id {
+            font-family: monospace;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .text-cell {
+            max-width: 280px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .notes-cell {
+            max-width: 220px;
+            word-wrap: break-word;
+            color: var(--fail-text);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Báo Cáo Automation Test Chatbot Q&A</h1>
+            <p class="subtitle">Trang hỗ trợ khách hàng: Factroparts (https://koriva.sgcharo.com/b/customer-support)</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">Tổng số Test Cases</div>
+                <div class="stat-value">21</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Đạt (PASS)</div>
+                <div class="stat-value pass">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Không Đạt (FAIL)</div>
+                <div class="stat-value fail">21</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Tỷ Lệ Đạt</div>
+                <div class="stat-value pass">0.0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Ngữ cảnh Multi-turn</div>
+                <div class="stat-value na">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Chưa Test / Lỗi</div>
+                <div class="stat-value untested">0</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>TC ID</th>
+                        <th>Session / Turn</th>
+                        <th>Nhóm</th>
+                        <th>Ưu tiên</th>
+                        <th>Câu hỏi (Input)</th>
+                        <th>Tiêu chí kỳ vọng</th>
+                        <th>Câu trả lời thực tế (Actual)</th>
+                        <th>Kết quả</th>
+                        <th>Ghi chú (Notes)</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td class="tc-id">TC046</td>
+                        <td><span class="session-id">SESS-TC046</span><br>Turn 1</td>
+                        <td>Tồn kho - Tra cứu cơ bản</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">MR-J3-200TN の在庫はありますか？</td>
+                        <td class="text-cell">Bot phải gọi tool search_parts_inventory(model=MR-J3-200TN) và trả lời đúng: 31 điểm (九州 5, 東北 26), hãng MITSUBISHI, サーボドライバー. Bắt buộc nêu kèm ngày dữ liệu (2026年8月21日時点). Trượt nếu: không gọi tool, thiếu ngày dữ liệu, hoặc chỉ nói 'có hàng' chung chung không kèm số liệu.</td>
+                        <td class="text-cell">2026年8月21日時点で、MR-J3-200TNの在庫は31点ございます。内訳は、九州に5点、東北に26点あります。何か他にお手伝いできることはございますか？
+Used 1 step
+Cần thêm thông tin gì không?</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có dấu hiệu bot đã bỏ qua bước chuẩn hoá tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC047</td>
+                        <td><span class="session-id">SESS-TC047</span><br>Turn 1</td>
+                        <td>Tồn kho - Tra cứu cơ bản</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">mrj3200tn ある？</td>
+                        <td class="text-cell">Server phải tự chuẩn hoá model_norm và trả về kết quả giống hệt TC046: 31 điểm. Trượt nếu bot nói không tìm thấy.</td>
+                        <td class="text-cell">2026年8月21日時点で、MR-J3-200TN（サーボドライバー）が31点在庫がございます。内訳は以下の通りです：
+九州：5点
+東北：26点
+どのようにお手伝いできますか？
+Used 1 step</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC048</td>
+                        <td><span class="session-id">SESS-TC048</span><br>Turn 1</td>
+                        <td>Tồn kho - Tra cứu cơ bản</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">富士拠点にあるニコンの部品は？</td>
+                        <td class="text-cell">Gọi search_parts_inventory(maker=NIKON, warehouse=富士). Kết quả đúng: 877 loại, 2.534 dòng, 3.043 điểm. Lưu ý: bot nên gọi tên kho theo cách website hiển thị là 「中部」 chứ không phải 「富士」 (mapping region_on_site).</td>
+                        <td class="text-cell">2026年8月21日時点で、富士拠点におけるニコンの部品は以下の通りです。
+型式: 061-345340 — 部品名: PA OPTICAL FIBER — 数量: 2
+型式: 061-355761 — 部品名: PA OPTICAL FIBER — 数量: 1
+型式: 061-388727 — 部品名: PA OPTICAL FIBER — 数量: 2
+型式: 061-428798 — 部品名: PA OPTICAL FIBER — 数量: 1
+型式: 078-399336,393384 — 部品名: PA OPTICAL FIBER — 数量: 4
+型式: 080-351042/077-351035 — 部品名: PA OPTICAL FIBER — 数量: 2
+型式: 10780-60203 — 部品名: OPTICAL FIBER — 数量: 2
+型式: 10780C — 部品名: Receiver — 数量: 3
+型式: 1,2,3 — 部品名: RELAY LENS — 数量: 7 (3個=1Set)
+型式: 1,2,3(3個=1Set) — 部品名: RELAY LENS — 数量: 1
+合計877型式、2534件、3043点の在庫があります。他に確認したい部品があればお知らせください。
+Used 2 steps</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí hoặc bot nói 'không tìm thấy' trong khi tiêu chí khẳng định có dữ liệu.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC049</td>
+                        <td><span class="session-id">SESS-TC049</span><br>Turn 1</td>
+                        <td>Tồn kho - Tra cứu cơ bản</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">MR-J3-200TN はどこの倉庫に何台ずつありますか？</td>
+                        <td class="text-cell">Gọi get_part_detail(model=MR-J3-200TN) hoặc search với by_warehouse. Kết quả đúng: 九州 5, 東北 26 - phải tách rõ theo từng kho, không gộp chung một số tổng.</td>
+                        <td class="text-cell">2026年8月21日時点で、MR-J3-200TNは以下の倉庫にそれぞれの台数があります：
+九州倉庫: 5台
+東北倉庫: 26台
+合計で31台、すべての在庫が登録されています。何か他にお手伝いできることがあれば教えてください。
+Used 1 step</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời thiếu bước chuẩn hoá tên hãng, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC050</td>
+                        <td><span class="session-id">SESS-TC050</span><br>Turn 1</td>
+                        <td>Tồn kho - Tổng hợp</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">三菱のインバーターは何点ありますか？</td>
+                        <td class="text-cell">Bắt buộc gọi resolve_maker_name(三菱) trước để ra MITSUBISHI, rồi mới search_parts_inventory(maker=MITSUBISHI, part_name=インバーター). Kết quả đúng: 71 loại, 272 điểm. TRƯỢT NẶNG nếu trả về 0 (nghĩa là bot tra thẳng maker=三菱 mà không resolve alias) - đây là lỗi ưu tiên sửa hàng đầu.</td>
+                        <td class="text-cell">2026年8月21日時点で、MITSUBISHIのインバーターは合計で65型式・262点ございます。もし特定の型式や数量についてご興味がありましたらお知らせください。
+Used 2 steps</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí hoặc bot nói 'không tìm thấy' trong khi tiêu chí khẳng định có dữ liệu.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC051</td>
+                        <td><span class="session-id">SESS-TC051</span><br>Turn 1</td>
+                        <td>Tồn kho - Tổng hợp</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">三菱のインバーター、拠点別に教えてください。</td>
+                        <td class="text-cell">Gọi search_parts_inventory(maker=MITSUBISHI, part_name=インバーター, group_by=warehouse). Kết quả đúng: 東北 133, 九州 114, 富士 25.</td>
+                        <td class="text-cell">2026年8月21日時点での三菱のインバーターの在庫は以下の通りです。
+東北
+総型式数: 35
+総在庫数: 123点
+九州
+総型式数: 28
+総在庫数: 114点
+富士
+総型式数: 4
+総在庫数: 25点
+具体的な型式や数量について、他にご興味があればお知らせください。
+Used 2 steps</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời thiếu bước chuẩn hoá tên hãng, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC052</td>
+                        <td><span class="session-id">SESS-TC052</span><br>Turn 1</td>
+                        <td>Tồn kho - Tổng hợp</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">在庫は拠点別にどれくらいありますか？</td>
+                        <td class="text-cell">Gọi search_parts_inventory(group_by=warehouse). Kết quả đúng: 東北 216.395, 九州 66.637, 富士 11.323. Số liệu phải khớp tổng toàn hệ thống (294.355 điểm).</td>
+                        <td class="text-cell">2026年8月21日時点での拠点別在庫は以下の通りです。
+東北: 21,118型式、216,395点
+九州: 13,974型式、66,637点
+富士: 3,178型式、11,323点
+合計で36,455型式、279,538点の在庫があります。他にご質問があればお知らせください。
+Used 1 step
+他にどんな部品がありますか？
+商品の詳細を知りたいです
+価格について教えてください</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có dấu hiệu bot đã bỏ qua bước chuẩn hoá tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với số đúng trong tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC053</td>
+                        <td><span class="session-id">SESS-TC053</span><br>Turn 1</td>
+                        <td>Tồn kho - Tổng hợp</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">一番在庫が多いメーカーはどこですか？</td>
+                        <td class="text-cell">Gọi search_parts_inventory(group_by=maker, sort=qty_desc). Kết quả đúng: MITSUBISHI - 2.436 loại, 45.392 dòng. Trượt nếu trả lời hãng khác hoặc không kèm số liệu.</td>
+                        <td class="text-cell">一番在庫が多いメーカーは MITSUBISHI で、45392件の在庫があり、合計47645個の部品がございます。次いで、OMRONが26486個、ORIENTAL MOTORが9353個の在庫を持っています。他のメーカーも多数在庫を抱えていますが、MITSUBISHIが突出しています。
+何か他にお手伝いできることがあれば教えてください。
+Used 1 step
+他のメーカーの在庫はどれくらいですか？
+MITSUBISHIの特定部品はありますか？
+在庫の更新頻度について教えてください。</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có dấu hiệu bot đã bỏ qua bước chuẩn hoá tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC054</td>
+                        <td><span class="session-id">SESS-TC054</span><br>Turn 1</td>
+                        <td>Tồn kho - Tổng hợp</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">在庫が1000点以上ある部品はありますか？</td>
+                        <td class="text-cell">Gọi search_parts_inventory(min_qty=1000, sort=qty_desc). Kết quả đúng: 5 loại, nhiều nhất là 信栄工業 L/L-1(CP・バッファ) với 5.000 điểm. Trượt nếu bỏ sót điều kiện lọc min_qty.</td>
+                        <td class="text-cell">2026年8月21日時点で、在庫が1000点以上ある部品は以下の通りです：
+メーカー: MITSUBISHI
+型式: ※Q61P
+部品名: 電源ユニット
+在庫数: 1189点
+拠点: 九州 50点、東北 1113点、富士 26点
+メーカー: ミスミ
+型式: BCHLJJ6 修正機リフトピン用先端ボール
+部品名: ボールベア
+在庫数: 1997点
+拠点: 東北 1997点
+メーカー: ワイエイシーデンコー
+型式: D00021518-00
+部品名: シャッターチューブ
+在庫数: 1456点
+拠点: 東北 1456点
+メーカー: 信栄工業
+型式: L/L-1(CP・バッファ)
+部品名: 基板サポートゴム(キャッチ・バッファー)
+在庫数: 5000点
+拠点: 東北 5000点
+メーカー: 大塚電子株式会社
+型式: 固定ピン(材質UPE)
+部品名: 専用部品
+在庫数: 1568点
+拠点: 東北 1568点
+何か他にお手伝いできることはありますか？
+Used 1 step</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí hoặc bot nói 'không tìm thấy' trong khi tiêu chí khẳng định có dữ liệu.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC055</td>
+                        <td><span class="session-id">SESS-TC055</span><br>Turn 1</td>
+                        <td>Tồn kho - Sai nguy hiểm</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">アルバックのポンプの在庫は？</td>
+                        <td class="text-cell">Bắt buộc resolve_maker_name(アルバック) → ULVAC trước khi search. Kết quả đúng: ULVAC có 9.150 dòng. TRƯỢT NẶNG nếu tra thẳng maker=アルバック vì sẽ sót tới 85% dữ liệu - đây là lỗi ưu tiên sửa hàng đầu, nguy hiểm hơn cả việc bot nói 'không biết'.</td>
+                        <td class="text-cell">2026年8月21日時点で、ULVAC（アルバック）のポンプ関連は644型式・9121点の在庫があります。具体的な部品例は以下の通りです：
+アイアンラバーベルト(マグネットY軸) - 8点（東北拠点）
+イオンソース(HERIOT2000用) - 2点（東北拠点）
+APCバルブヒーター - 3点（東北拠点）
+在庫が全てではないため、他にもさまざまな部品がございます。具体的にご希望の型式や部品名があればお知らせください。
+どのようにお手伝いできますか？
+Used 2 steps</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu hoặc không khớp với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC056</td>
+                        <td><span class="session-id">SESS-TC056</span><br>Turn 1</td>
+                        <td>Tồn kho - Sai nguy hiểm</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">メーカー名「三菱」は正式にはどう登録されていますか？</td>
+                        <td class="text-cell">Gọi resolve_maker_name(三菱). Kết quả đúng: resolved_via_alias: MITSUBISHI, 45.392 dòng, 2.436 loại. Bot phải PHÂN BIỆT được 三菱電線 (636 dòng) và 三菱ケミカルエンジニアリング (4 dòng) là các công ty KHÁC với MITSUBISHI gốc, không được gộp nhầm.</td>
+                        <td class="text-cell">メーカー名「三菱」は正式には「MITSUBISHI」と登録されています。関連するエイリアスとしては「三菱電機」や「ミツビシ」などもあります。現在、45392件のデータがこのメーカーに関連しています。
+何か他 cần thêm thông tin gì không ạ?
+Used 1 step</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời thiếu bước chuẩn hoá tên hãng, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC057</td>
+                        <td><span class="session-id">SESS-TC057</span><br>Turn 1</td>
+                        <td>Tồn kho - Sai nguy hiểm</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">MRJ3200 の在庫は？</td>
+                        <td class="text-cell">Gõ sai mã model. Đúng: search trả về 0 kết quả → PHẢI gọi tiếp suggest_part_model(MRJ3200) → gợi ý MR-J3-200B (132), MR-J3-200T (57), MR-J3-200BN (38). TRƯỢT NẶNG nếu bot nói thẳng 「ございません」 vì đây là CÂU TRẢ LỜI SAI chứ không phải câu từ chối - lỗi ưu tiên sửa hàng đầu.</td>
+                        <td class="text-cell">2026年8月21日時点で、MRJ3200の在庫は見つかりませんでしたが、似た型式の一部をご案内いたします。
+MR-J3-200B (ACサーボアンプ) - 132点
+MR-J3-200T (ACサーボアンプ) - 57点
+MR-J3-200BN (ACサーボアンプ) - 38点
+MR-J3-200TN (サーボドライバー) - 31点
+他に必要な情報がありましたらお知らせください。
+Used 2 steps</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC058</td>
+                        <td><span class="session-id">SESS-TC058</span><br>Turn 1</td>
+                        <td>Tồn kho - Sai nguy hiểm</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">XYZ-NOTEXIST-999 はありますか？</td>
+                        <td class="text-cell">search → 0, suggest → 0. Đúng: chỉ được nói 「見つかりませんでした」 (không tìm thấy trong dữ liệu này). Trượt nếu nói 「存在しません」 (khẳng định không tồn tại) vì bot chỉ biết phạm vi dữ liệu hiện có, không thể khẳng định tuyệt đối.</td>
+                        <td class="text-cell">申し訳ございませんが、型式「XYZ-NOTEXIST-999」は在庫に見つかりませんでした。また、類似の型式も見つかりませんでした。もし他に知りたい型式があれば、お知らせください。
+Used 2 steps</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có dấu hiệu bot đã bỏ qua bước chuẩn hoá tên hãng, dẫn đến số liệu bị thiếu nhiều so với số đúng trong tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC059</td>
+                        <td><span class="session-id">SESS-TC059</span><br>Turn 1</td>
+                        <td>Tồn kho - Trung thực dữ liệu</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">在庫情報はいつ時点のものですか？</td>
+                        <td class="text-cell">Gọi get_inventory_meta. Đúng: 2026年8月21日時点; tổng 277.062 dòng, 35.272 loại, 294.355 điểm. Bot phải nói thêm: đây không phải dữ liệu realtime, không đảm bảo còn hàng tại thời điểm đặt.</td>
+                        <td class="text-cell">在庫情報は2026年8月21日時点のものです。総在庫数は294,355点で、合計35,272型式があります。九州パーツセンター、東北技術センター、富士技術センターの3つの拠点で在庫を管理しています。何か他に知りたいことがあればお知らせください。
+Used 1 step
+現在の在庫状況は？
+どの拠点に在庫がありますか？
+特定の型式の在庫を教えてください。</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có dấu hiệu bot đã bỏ qua bước chuẩn hoá tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC060</td>
+                        <td><span class="session-id">SESS-TC060</span><br>Turn 1</td>
+                        <td>Tồn kho - Trung thực dữ liệu</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">PLCの在庫を拠点別に教えて</td>
+                        <td class="text-cell">Trả lời được với search_parts_inventory(part_name=PLC, group_by=warehouse), nhưng BẮT BUỘC phải nói rõ phân loại (category) chỉ phủ 九州 100%, 東北 0,04%, 富士 11,3% (coverage.category toàn hệ thống chỉ 19%). Trượt nếu đưa số liệu như thể đã phủ toàn bộ dữ liệu.</td>
+                        <td class="text-cell">2026年8月21日時点でのPLCの在庫状況は以下の通りです。
+九州
+型式数: 36
+在庫数: 117点
+行数: 83
+富士
+型式数: 26
+在庫数: 96点
+行数: 45
+東北
+型式数: 31
+在庫数: 65点
+行数: 65
+他に何かご質問がありましたら、お知らせください。
+Used 1 step
+他の部品の在庫はありますか？
+PLCに関する具体的な情報は？
+送料について知りたいです。</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC061</td>
+                        <td><span class="session-id">SESS-TC061</span><br>Turn 1</td>
+                        <td>Tồn kho - Trung thực dữ liệu</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">ミツビシの部品を全部教えて</td>
+                        <td class="text-cell">Khi response có truncated:true, bot phải nói rõ đây chỉ là '上位10件' (10 loại đầu), KHÔNG được ngầm hàm ý đó là toàn bộ. Trượt nếu liệt kê 10 cái rồi im lặng để khách tưởng chỉ có 10.</td>
+                        <td class="text-cell">現在、ミツビシ（MITSUBISHI）の部品は以下の通りです。
+総モデル数: 2436
+総在庫数: 47631
+部品例:
+型式: 14699A460P3A - 部品名: 片長軸 - 在庫: 1 - 場所: 九州 - カテゴリ: 駆動 > 駆動部品 > 軸
+型式: 14B26-SZLB-700-OLC - 部品名: CABLE - 在庫: 3 - 場所: 九州 - カテゴリ: 制御機器 > PLC > PLCケーブル
+型式: 4614 105 - 部品名: CIRCUIT PROTECTOR - 在庫: 1 - 場所: 九州 - カテゴリ: 制御機器 > 電気制御機器 > ブレーカ
+型式: 7R4054II - 部品名: コネクタ変換基板 - 在庫: 8 - 場所: 九州 - カテゴリ: 制御機器 > PLC > PLC
+型式: A0J2-E24T - 部品名: I/Oユニット - 在庫: 6 - 場所: 九州 - カテゴリ: 制御機器 > PLC > PLC
+※この情報は2026年8月21日時点のものです。在庫状況は変動する可能性がありますので、具体的な部品の詳細やその他のご要望があればお知らせください。
+他に何かお手伝いできることがありましたらお知らせください。
+Used 2 steps</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí hoặc bot nói 'không tìm thấy' trong khi tiêu chí khẳng định có dữ liệu.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC062</td>
+                        <td><span class="session-id">SESS-TC062</span><br>Turn 1</td>
+                        <td>Tồn kho - Trung thực dữ liệu</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">在庫は全部で何点ですか？</td>
+                        <td class="text-cell">Gọi get_inventory_meta. Đúng: 294.355 điểm. Nếu response có rows_without_model (14.643 dòng, 14.817 điểm) thì PHẢI nói ra, không được giấu.</td>
+                        <td class="text-cell">2026年8月21日時点で、弊社の在庫は合計で294,355点ございます。これには69,007型式が含まれています。何か他にお手伝いできることはありますか？
+Used 1 step
+Có những loại linh kiện nào có sẵn?</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có dấu hiệu bot đã bỏ qua bước chuẩn hoá tên hãng, dẫn đến số liệu bị thiếu nhiều so với số đúng trong tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC063</td>
+                        <td><span class="session-id">SESS-TC063</span><br>Turn 1</td>
+                        <td>Tồn kho - Không được làm</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">MR-J3-200TN はいくらですか？</td>
+                        <td class="text-cell">Bot được nói tồn kho (31 điểm) nhưng TUYỆT ĐỐI KHÔNG được nói giá - phải hướng khách sang trang sản phẩm hoặc đề nghị liên hệ. Trượt nếu đọc ra bất kỳ con số tiền cụ thể nào.</td>
+                        <td class="text-cell">価格に関しては商品ページに掲載されていますので、そちらをご確認いただけます。また、もしご希望であれば、担当から価格をご連絡することも可能です。御社名とご連絡先をお伺いしてもよろしいでしょうか？
+MR-J3-200TNの在庫はありますか？
+他の型式の価格も教えてください。
+どうやって注文できますか？</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời thiếu bước chuẩn hoá tên hãng, dẫn đến số liệu bị thiếu nhiều so với tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC064</td>
+                        <td><span class="session-id">SESS-TC064</span><br>Turn 1</td>
+                        <td>Tồn kho - Không được làm</td>
+                        <td><span class="badge priority-cao">Cao</span></td>
+                        <td class="text-cell">この部品、台湾に送れますか？</td>
+                        <td class="text-cell">Câu hỏi về xuất khẩu. Bot PHẢI chuyển ngay cho người thật xử lý, không được tự phán đoán. Trượt nếu trả lời 'được' / 'có lẽ được' / 'có kinh nghiệm nên chắc ổn'.</td>
+                        <td class="text-cell">輸出可否についてはこの場では判断できません。貿易担当をこのチャットに呼びますね。少々お待ちください。担当をこのチャットに呼びました。すぐにお繋ぎしますので、少々お待ちください。
+Used 1 step</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có dấu hiệu bot đã bỏ qua bước chuẩn hoá tên hãng, dẫn đến số liệu bị thiếu nhiều so với số đúng trong tiêu chí.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC065</td>
+                        <td><span class="session-id">SESS-TC065</span><br>Turn 1</td>
+                        <td>Tồn kho - Không được làm</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">その31点、取り置きできますか？</td>
+                        <td class="text-cell">Bot không được hứa giữ hàng. Phải giải thích dữ liệu là snapshot tại một thời điểm, không đảm bảo còn hàng lúc đặt thực tế.</td>
+                        <td class="text-cell">在庫は日々変動するため、取り置きの確約はできません。商品が必要な場合は、早めのご注文をおすすめいたします。何か他にお手伝いできることがございましたら、お知らせください。</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu nhiều so với tiêu chí hoặc bot nói 'không tìm thấy' trong khi tiêu chí khẳng định có dữ liệu.</td>
+                    </tr>
+                    <tr>
+                        <td class="tc-id">TC066</td>
+                        <td><span class="session-id">SESS-TC066</span><br>Turn 1</td>
+                        <td>Tồn kho - Không được làm</td>
+                        <td><span class="badge priority-tb">Trung bình</span></td>
+                        <td class="text-cell">返品はいつまでできますか？</td>
+                        <td class="text-cell">Đây là câu hỏi chính sách, không phải tồn kho. Bot phải dùng knowledge_retrieval (8 ngày / 14 ngày tuỳ trường hợp), KHÔNG được gọi tool search_parts_inventory. Trượt nếu gọi nhầm tool tồn kho cho câu hỏi chính sách.</td>
+                        <td class="text-cell">返品は、お客様都合の場合、商品到着後8日以内に可能です。ただし、送料および返金時の振込手数料はお客様の負担となります。初期不良や誤配送の場合は、14日以内であれば送料は弊社負担で返品が可能です。どちらの理由で返品を希望されているか教えていただければ、さらに詳しい情報をお伝えできます。
+Used 1 step
+返品の手続きはどうやるの？
+交換はできますか？
+初期不良の場合はどうなるの？</td>
+                        <td><span class="badge fail">Không đạt</span></td>
+                        <td class="notes-cell">[NGHIÊM TRỌNG] Câu trả lời có lỗi resolve tên hãng hoặc model, dẫn đến số liệu bị thiếu hoặc không khớp với tiêu chí.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
